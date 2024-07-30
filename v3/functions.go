@@ -97,6 +97,8 @@ var (
 	isWindowVisible               = user32.NewProc("IsWindowVisible")
 	getWindowTextLength           = user32.NewProc("GetWindowTextLengthW")
 	monitorFromPoint              = user32.NewProc("MonitorFromPoint")
+	monitorFromRect               = user32.NewProc("MonitorFromRect")
+	monitorFromWindow             = user32.NewProc("MonitorFromWindow")
 	printWindow                   = user32.NewProc("PrintWindow")
 	animateWindow                 = user32.NewProc("AnimateWindow")
 	invalidateRect                = user32.NewProc("InvalidateRect")
@@ -1256,6 +1258,24 @@ func MonitorFromPoint(p POINT, flags uint32) HMONITOR {
 	ret, _, _ := monitorFromPoint.Call(
 		// TODO This seems to need 32 and 64 bit specific code.
 		// uintptr(p),
+		uintptr(flags),
+	)
+	return HMONITOR(ret)
+}
+
+// https://learn.microsoft.com/windows/win32/api/winuser/nf-winuser-monitorfromrect
+func MonitorFromRect(r RECT, flags uint32) HMONITOR {
+	ret, _, _ := monitorFromRect.Call(
+		uintptr(unsafe.Pointer(&r)),
+		uintptr(flags),
+	)
+	return HMONITOR(ret)
+}
+
+// https://learn.microsoft.com/windows/win32/api/winuser/nf-winuser-monitorfromwindow
+func MonitorFromWindow(window HWND, flags uint32) HMONITOR {
+	ret, _, _ := monitorFromWindow.Call(
+		uintptr(window),
 		uintptr(flags),
 	)
 	return HMONITOR(ret)
