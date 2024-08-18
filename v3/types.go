@@ -1,6 +1,5 @@
 package w32
 
-// TODO Remove the de-de and en-us from the URLs.
 // TODO Check that no type field uses Hungarian notation.
 
 import (
@@ -34,7 +33,7 @@ type (
 	COLORREF    uint32
 )
 
-// http://msdn.microsoft.com/en-us/library/windows/desktop/ms633577.aspx
+// https://learn.microsoft.com/windows/win32/api/winuser/ns-winuser-wndclassexw
 type WNDCLASSEX struct {
 	Size       uint32
 	Style      uint32
@@ -50,7 +49,7 @@ type WNDCLASSEX struct {
 	IconSm     HICON
 }
 
-// https://learn.microsoft.com/de-de/windows/win32/api/winuser/ns-winuser-msg
+// https://learn.microsoft.com/windows/win32/api/winuser/ns-winuser-msg
 type MSG struct {
 	Hwnd    HWND
 	Message uint32
@@ -61,12 +60,12 @@ type MSG struct {
 	private uint32
 }
 
-// https://learn.microsoft.com/en-us/windows/win32/api/windef/ns-windef-point
+// https://learn.microsoft.com/windows/win32/api/windef/ns-windef-point
 type POINT struct {
 	X, Y int32
 }
 
-// https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-iconinfo
+// https://learn.microsoft.com/windows/win32/api/winuser/ns-winuser-iconinfo
 type ICONINFO struct {
 	Icon     BOOL // TRUE for icon, FALSE for cursor.
 	XHotspot uint32
@@ -75,7 +74,7 @@ type ICONINFO struct {
 	Color    HBITMAP
 }
 
-// https://learn.microsoft.com/en-us/windows/win32/api/winuser/ns-winuser-paintstruct
+// https://learn.microsoft.com/windows/win32/api/winuser/ns-winuser-paintstruct
 type PAINTSTRUCT struct {
 	Hdc       HDC
 	Erase     BOOL
@@ -85,7 +84,7 @@ type PAINTSTRUCT struct {
 	reserved  [32]byte
 }
 
-// https://learn.microsoft.com/en-us/windows/win32/api/windef/ns-windef-rect
+// https://learn.microsoft.com/windows/win32/api/windef/ns-windef-rect
 type RECT struct {
 	Left   int32
 	Top    int32
@@ -93,7 +92,7 @@ type RECT struct {
 	Bottom int32
 }
 
-// https://learn.microsoft.com/en-us/windows/win32/api/commctrl/ns-commctrl-initcommoncontrolsex
+// https://learn.microsoft.com/windows/win32/api/commctrl/ns-commctrl-initcommoncontrolsex
 type INITCOMMONCONTROLSEX struct {
 	Size uint32
 	ICC  uint32
@@ -106,7 +105,7 @@ type NMHDR struct {
 	Code     uint32
 }
 
-// http://msdn.microsoft.com/en-us/library/windows/desktop/dd183371.aspx
+// http://msdn.microsoft.com/library/windows/desktop/dd183371.aspx
 type BITMAP struct {
 	Type       int32
 	Width      int32

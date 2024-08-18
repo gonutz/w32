@@ -1,13 +1,11 @@
 package w32
 
-// TODO Remove the de-de and en-us from the URLs.
-
 import "unsafe"
 
 // Windows' BOOL is really a int32, 0 is false, everything else is considered
 // true. If you must set a BOOL field or parameter, use TRUE or FALSE.
 //
-// https://learn.microsoft.com/en-us/windows/win32/winprog/windows-data-types
+// https://learn.microsoft.com/windows/win32/winprog/windows-data-types
 const (
 	TRUE  = 1
 	FALSE = 0
@@ -17,7 +15,7 @@ const (
 // are still used to set a window class' background color, e.g. to
 // w32.GetSysColorBrush(w32.COLOR_BTNFACE).
 //
-// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-getsyscolor
+// https://learn.microsoft.com/windows/win32/api/winuser/nf-winuser-getsyscolor
 const (
 	COLOR_SCROLLBAR               = 0
 	COLOR_DESKTOP                 = 1
@@ -57,7 +55,7 @@ const (
 	COLOR_MENUBAR                 = 30
 )
 
-// https://learn.microsoft.com/en-us/windows/win32/winmsg/window-class-styles
+// https://learn.microsoft.com/windows/win32/winmsg/window-class-styles
 const (
 	CS_VREDRAW         = 1
 	CS_HREDRAW         = 2
@@ -77,7 +75,7 @@ const (
 // Window messages are sent to the window class' window procedure. They
 // identify the type of event that happened.
 //
-// https://learn.microsoft.com/en-us/windows/win32/learnwin32/window-messages
+// https://learn.microsoft.com/windows/win32/learnwin32/window-messages
 const (
 	WM_CTLCOLOR                                  = 25
 	WM_MOUSEHOVER                                = 673
@@ -514,7 +512,7 @@ const CW_USEDEFAULT = -2147483648
 // Window styles can be used in CreateWindowEx to give a window specific
 // properties, like borders and min/max buttons.
 //
-// https://learn.microsoft.com/en-us/windows/win32/winmsg/window-styles
+// https://learn.microsoft.com/windows/win32/winmsg/window-styles
 const (
 	WS_OVERLAPPED       = 0
 	WS_POPUP            = 2147483648
@@ -550,7 +548,7 @@ const (
 // They allow more control over the window properties, in addition to the
 // non-extended window styles.
 //
-// https://learn.microsoft.com/en-us/windows/win32/winmsg/extended-window-styles
+// https://learn.microsoft.com/windows/win32/winmsg/extended-window-styles
 const (
 	WS_EX_DLGMODALFRAME       = 1
 	WS_EX_NOPARENTNOTIFY      = 4
@@ -584,7 +582,7 @@ const (
 // PeekMessage takes these constants as its last parameter. They define what
 // messages are peeked and whether they remain in the queue or not.
 //
-// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-peekmessagew
+// https://learn.microsoft.com/windows/win32/api/winuser/nf-winuser-peekmessagew
 const (
 	PM_NOREMOVE       = 0
 	PM_REMOVE         = 1
@@ -599,7 +597,7 @@ const (
 //
 //	w32.LoadCursor(0, w32.MakeIntResource(w32.IDC_ARROW))
 //
-// https://learn.microsoft.com/en-us/windows/win32/menurc/about-cursors
+// https://learn.microsoft.com/windows/win32/menurc/about-cursors
 const (
 	IDC_ARROW       = 32512
 	IDC_IBEAM       = 32513
@@ -625,7 +623,7 @@ const (
 //
 //	w32.LoadIcon(0, w32.MakeIntResource(w32.IDI_SHIELD))
 //
-// https://learn.microsoft.com/en-us/windows/win32/menurc/about-icons
+// https://learn.microsoft.com/windows/win32/menurc/about-icons
 const (
 	IDI_APPLICATION = 32512
 	IDI_ERROR       = 32513
@@ -639,7 +637,7 @@ const (
 // These constants are used for the last parameter to LoadImage. They determine
 // the way an image is loaded.
 //
-// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagew
+// https://learn.microsoft.com/windows/win32/api/winuser/nf-winuser-loadimagew
 const (
 	LR_DEFAULTCOLOR     = 0x0000
 	LR_MONOCHROME       = 0x0001
@@ -658,14 +656,14 @@ const (
 
 // These constants determine the type of image to load in LoadImage.
 //
-// https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-loadimagew
+// https://learn.microsoft.com/windows/win32/api/winuser/nf-winuser-loadimagew
 const (
 	IMAGE_BITMAP = 0
 	IMAGE_ICON   = 1
 	IMAGE_CURSOR = 2
 )
 
-// https://learn.microsoft.com/en-us/windows/win32/api/wingdi/nf-wingdi-selectobject
+// https://learn.microsoft.com/windows/win32/api/wingdi/nf-wingdi-selectobject
 const (
 	NULLREGION    = 1
 	SIMPLEREGION  = 2
@@ -674,7 +672,7 @@ const (
 
 const HGDI_ERROR = 65535
 
-// https://learn.microsoft.com/en-us/windows/win32/controls/button-styles
+// https://learn.microsoft.com/windows/win32/controls/button-styles
 const (
 	BS_3STATE          = 5
 	BS_AUTO3STATE      = 6
@@ -744,7 +742,7 @@ const INVALID_HANDLE_VALUE = ^HANDLE(0)
 
 var LPSTR_TEXTCALLBACK = UTF16String(unsafe.Pointer(^uintptr(0)))
 
-// https://learn.microsoft.com/en-us/windows/win32/controls/ilc-constants
+// https://learn.microsoft.com/windows/win32/controls/ilc-constants
 const (
 	ILC_MASK             = 1
 	ILC_COLOR            = 0
@@ -761,7 +759,7 @@ const (
 	ILC_HIGHQUALITYSCALE = 131072
 )
 
-// https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_draw
+// https://learn.microsoft.com/windows/win32/api/commctrl/nf-commctrl-imagelist_draw
 const (
 	ILD_NORMAL        = 0
 	ILD_TRANSPARENT   = 1
@@ -780,7 +778,7 @@ const (
 	ILD_ASYNC         = 32768
 )
 
-// https://learn.microsoft.com/en-us/windows/win32/api/commctrl/nf-commctrl-imagelist_drawex
+// https://learn.microsoft.com/windows/win32/api/commctrl/nf-commctrl-imagelist_drawex
 const (
 	CLR_NONE    = 0xFFFFFFFF
 	CLR_INVALID = 0xFFFFFFFF
@@ -1333,7 +1331,7 @@ const (
 	// message-only window, i.e. a non-visible window that only exists to receive
 	// window messages.
 	//
-	// https://learn.microsoft.com/en-us/windows/win32/winmsg/window-features
+	// https://learn.microsoft.com/windows/win32/winmsg/window-features
 	HWND_MESSAGE = ^HWND(3) + 1
 
 	HWND_DESKTOP   = 0
