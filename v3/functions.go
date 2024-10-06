@@ -328,6 +328,7 @@ func DestroyWindow(window HWND) error {
 }
 
 // https://learn.microsoft.com/windows/win32/api/winuser/nf-winuser-getmessage
+// Use GetNextMessage for the regular use case of a normal message pump.
 func GetMessage(msg *MSG, hwnd HWND, msgFilterMin, msgFilterMax uint32) (bool, error) {
 	ret, _, err := getMessage.Call(
 		uintptr(unsafe.Pointer(msg)),
@@ -336,6 +337,21 @@ func GetMessage(msg *MSG, hwnd HWND, msgFilterMin, msgFilterMax uint32) (bool, e
 		uintptr(msgFilterMax),
 	)
 	return ret != 0, makeErr(int(ret) == -1, "w32.getMessage returned -1", err)
+}
+
+// GetNextMessage is a wrapper around GetMessage. It passes zeros as the window
+// and the message filters. It returns true as long as GetMessage returns
+// positive values. Theoretically GetMessage could return -1, but in this case
+// it cannot. While GetMessage gives you the full API, GetNextMessage is the
+// function you can used almost all of the time.
+func GetNextMessage(msg *MSG) bool {
+	ret, _, _ := getMessage.Call(
+		uintptr(unsafe.Pointer(msg)),
+		0,
+		0,
+		0,
+	)
+	return int(ret) > 0
 }
 
 // https://learn.microsoft.com/windows/win32/api/winuser/nf-winuser-peekmessagew
