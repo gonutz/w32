@@ -1558,6 +1558,7 @@ func FindWindowEx(parent, child HWND, className, windowName string) HWND {
 	)
 	return HWND(ret)
 }
+
 func GetClassName(window HWND) (string, bool) {
 	var output [256]uint16
 	ret, _, _ := getClassName.Call(
