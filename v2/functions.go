@@ -9,28 +9,31 @@ import (
 )
 
 var (
-	user32   = syscall.NewLazyDLL("user32.dll")
-	advapi32 = syscall.NewLazyDLL("advapi32.dll")
-	comctl32 = syscall.NewLazyDLL("comctl32.dll")
-	comdlg32 = syscall.NewLazyDLL("comdlg32.dll")
-	dwmapi   = syscall.NewLazyDLL("dwmapi.dll")
-	gdi32    = syscall.NewLazyDLL("gdi32.dll")
-	kernel32 = syscall.NewLazyDLL("kernel32.dll")
-	ole32    = syscall.NewLazyDLL("ole32.dll")
-	oleaut32 = syscall.NewLazyDLL("oleaut32")
-	opengl32 = syscall.NewLazyDLL("opengl32.dll")
-	psapi    = syscall.NewLazyDLL("psapi.dll")
-	shell32  = syscall.NewLazyDLL("shell32.dll")
-	gdiplus  = syscall.NewLazyDLL("gdiplus.dll")
-	version  = syscall.NewLazyDLL("version.dll")
-	winmm    = syscall.NewLazyDLL("winmm.dll")
-	dxva2    = syscall.NewLazyDLL("dxva2.dll")
-	msimg32  = syscall.NewLazyDLL("msimg32.dll")
-	mpr      = syscall.NewLazyDLL("mpr.dll")
-	ntoskrnl = syscall.NewLazyDLL("ntoskrnl.exe")
-	ntdll    = syscall.NewLazyDLL("ntdll.dll")
-	setupAPI = syscall.NewLazyDLL("SetupAPI.dll")
-	shcore   = syscall.NewLazyDLL("Shcore.dll")
+	user32    = syscall.NewLazyDLL("user32.dll")
+	advapi32  = syscall.NewLazyDLL("advapi32.dll")
+	comctl32  = syscall.NewLazyDLL("comctl32.dll")
+	comdlg32  = syscall.NewLazyDLL("comdlg32.dll")
+	dwmapi    = syscall.NewLazyDLL("dwmapi.dll")
+	gdi32     = syscall.NewLazyDLL("gdi32.dll")
+	kernel32  = syscall.NewLazyDLL("kernel32.dll")
+	ole32     = syscall.NewLazyDLL("ole32.dll")
+	oleaut32  = syscall.NewLazyDLL("oleaut32")
+	opengl32  = syscall.NewLazyDLL("opengl32.dll")
+	psapi     = syscall.NewLazyDLL("psapi.dll")
+	shell32   = syscall.NewLazyDLL("shell32.dll")
+	gdiplus   = syscall.NewLazyDLL("gdiplus.dll")
+	version   = syscall.NewLazyDLL("version.dll")
+	winmm     = syscall.NewLazyDLL("winmm.dll")
+	dxva2     = syscall.NewLazyDLL("dxva2.dll")
+	msimg32   = syscall.NewLazyDLL("msimg32.dll")
+	mpr       = syscall.NewLazyDLL("mpr.dll")
+	ntoskrnl  = syscall.NewLazyDLL("ntoskrnl.exe")
+	ntdll     = syscall.NewLazyDLL("ntdll.dll")
+	setupAPI  = syscall.NewLazyDLL("SetupAPI.dll")
+	shcore    = syscall.NewLazyDLL("Shcore.dll")
+	xinput14  = syscall.NewLazyDLL("XInput1_4.dll")
+	xinput910 = syscall.NewLazyDLL("XInput9_1_0.dll")
+	xinput13  = syscall.NewLazyDLL("xinput1_3.dll")
 
 	registerClassEx                  = user32.NewProc("RegisterClassExW")
 	unregisterClass                  = user32.NewProc("UnregisterClassW")
@@ -480,6 +483,17 @@ var (
 	setupDiOpenDevRegKey         = setupAPI.NewProc("SetupDiOpenDevRegKey")
 
 	setProcessDpiAwareness = shcore.NewProc("SetProcessDpiAwareness")
+
+	xInputEnable14 = xinput14.NewProc("XInputEnable")
+	xInputEnable13 = xinput13.NewProc("XInputEnable")
+
+	xInputGetState14  = xinput14.NewProc("XInputGetState")
+	xInputGetState910 = xinput910.NewProc("XInputGetState")
+	xInputGetState13  = xinput13.NewProc("XInputGetState")
+
+	xInputSetState14  = xinput14.NewProc("XInputSetState")
+	xInputSetState910 = xinput910.NewProc("XInputSetState")
+	xInputSetState13  = xinput13.NewProc("XInputSetState")
 )
 
 // RegisterClassEx sets the Size of the WNDCLASSEX automatically.
@@ -4775,4 +4789,72 @@ func SetupDiOpenDevRegKey(
 func SetProcessDpiAwareness(value int) HRESULT {
 	ret, _, _ := setProcessDpiAwareness.Call(uintptr(value))
 	return HRESULT(ret)
+}
+
+func XInputEnable(enable bool) {
+	var xInputEnable *syscall.LazyProc
+
+	if xInputEnable14.Find() == nil {
+		xInputEnable = xInputEnable14
+	} else if xInputEnable13.Find() == nil {
+		xInputEnable = xInputEnable13
+	} else {
+		return
+	}
+
+	xInputEnable.Call(uintptr(BoolToBOOL(enable)))
+}
+
+func XInputGetState(userIndex int) (XINPUT_STATE, error) {
+	var xInputGetState *syscall.LazyProc
+
+	if xInputGetState14.Find() == nil {
+		xInputGetState = xInputGetState14
+	} else if xInputGetState910.Find() == nil {
+		xInputGetState = xInputGetState910
+	} else if xInputGetState13.Find() == nil {
+		xInputGetState = xInputGetState13
+	} else {
+		return XINPUT_STATE{}, fmt.Errorf("no compatible XInput DLL found")
+	}
+
+	var state XINPUT_STATE
+	ret, _, _ := xInputGetState.Call(
+		uintptr(userIndex),
+		uintptr(unsafe.Pointer(&state)),
+	)
+	if ret == ERROR_SUCCESS {
+		return state, nil
+	}
+	if ret == ERROR_DEVICE_NOT_CONNECTED {
+		return XINPUT_STATE{}, fmt.Errorf("XInputGetState failed because the device %d is not connected", userIndex)
+	}
+	return XINPUT_STATE{}, fmt.Errorf("XInputGetState(%d) returned %v", userIndex, ret)
+}
+
+func XInputSetState(userIndex int, vibration XINPUT_VIBRATION) error {
+	var xInputSetState *syscall.LazyProc
+
+	if xInputSetState14.Find() == nil {
+		xInputSetState = xInputSetState14
+	} else if xInputSetState910.Find() == nil {
+		xInputSetState = xInputSetState910
+	} else if xInputSetState13.Find() == nil {
+		xInputSetState = xInputSetState13
+	} else {
+		return fmt.Errorf("XInputSetState failed because your XInput version does not support this function")
+	}
+
+	ret, _, _ := xInputSetState.Call(
+		uintptr(userIndex),
+		uintptr(unsafe.Pointer(&vibration)),
+	)
+
+	if ret == ERROR_SUCCESS {
+		return nil
+	}
+	if ret == ERROR_DEVICE_NOT_CONNECTED {
+		return fmt.Errorf("XInputSetState failed because the device %d is not connected", userIndex)
+	}
+	return fmt.Errorf("XInputSetState(%d) returned %v", userIndex, ret)
 }

@@ -1304,3 +1304,44 @@ type MSLLHOOKSTRUCT struct {
 	Time      DWORD
 	ExtraInfo ULONG_PTR
 }
+
+type XINPUT_GAMEPAD struct {
+	Buttons      uint16
+	LeftTrigger  uint8
+	RightTrigger uint8
+	ThumbLX      int16
+	ThumbLY      int16
+	ThumbRX      int16
+	ThumbRY      int16
+}
+
+type XINPUT_STATE struct {
+	PacketNumber uint32
+	Gamepad      XINPUT_GAMEPAD
+}
+
+type XINPUT_VIBRATION struct {
+	LeftMotorSpeed  uint16
+	RightMotorSpeed uint16
+}
+
+type XINPUT_CAPABILITIES struct {
+	Type      uint8
+	SubType   uint8
+	Flags     uint16
+	Gamepad   XINPUT_GAMEPAD
+	Vibration XINPUT_VIBRATION
+}
+
+type XINPUT_KEYSTROKE struct {
+	VirtualKey uint16
+	Unicode    uint16
+	Flags      uint16
+	UserIndex  uint8
+	HidCode    uint8
+}
+
+type XINPUT_BATTERY_INFORMATION struct {
+	BatteryType  uint8
+	BatteryLevel uint8
+}
