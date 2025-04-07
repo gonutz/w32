@@ -158,6 +158,7 @@ var (
 	loadImage                        = user32.NewProc("LoadImageW")
 	getForegroundWindow              = user32.NewProc("GetForegroundWindow")
 	findWindow                       = user32.NewProc("FindWindowW")
+	findWindowEx                     = user32.NewProc("FindWindowExW")
 	getClassName                     = user32.NewProc("GetClassNameW")
 	getDesktopWindow                 = user32.NewProc("GetDesktopWindow")
 	getRawInputData                  = user32.NewProc("GetRawInputData")
@@ -1552,6 +1553,23 @@ func FindWindow(className, windowName string) HWND {
 		window = uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(windowName)))
 	}
 	ret, _, _ := findWindow.Call(class, window)
+	return HWND(ret)
+}
+
+func FindWindowEx(parent, child HWND, className, windowName string) HWND {
+	var class, window uintptr
+	if className != "" {
+		class = uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(className)))
+	}
+	if windowName != "" {
+		window = uintptr(unsafe.Pointer(syscall.StringToUTF16Ptr(windowName)))
+	}
+	ret, _, _ := findWindowEx.Call(
+		uintptr(parent),
+		uintptr(child),
+		class,
+		window,
+	)
 	return HWND(ret)
 }
 
