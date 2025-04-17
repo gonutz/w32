@@ -1,3 +1,6 @@
+//go:build !386
+// +build !386
+
 package w32
 
 // MenuItemFromPoint determines which menu item, if any, is at the specified
